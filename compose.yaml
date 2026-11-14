@@ -1,0 +1,15 @@
+# One command:  docker compose up --build    then open http://127.0.0.1:8765
+services:
+  plate-stream:
+    build: .
+    image: plate-stream:latest
+    ports:
+      - "127.0.0.1:8765:8765"   # reachable from this computer only
+    volumes:
+      - ./:/videos:ro             # videos in this folder appear as one-click samples
+      - plate-results:/app/output # results survive a restart
+    mem_limit: 512m               # the project's memory budget, enforced
+    restart: unless-stopped
+
+volumes:
+  plate-results:

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Plate Stream</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f14'/%3E%3Crect x='5' y='10' width='22' height='12' rx='3' fill='none' stroke='%232bd4c0' stroke-width='2'/%3E%3Cpath d='M5 16h22' stroke='%232bd4c0' stroke-width='1.5' opacity='.7'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <a class="skip" href="#plates">Skip to plates found</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="3" y="8" width="26" height="16" rx="3.5" fill="none" stroke="var(--accent)" stroke-width="2"/>
+        <path d="M3 16h26" stroke="var(--accent)" stroke-width="1.5" opacity=".6"/>
+        <path d="M8 20.5h6M18 20.5h6" stroke="var(--text)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>Plate Stream</span>
+    </div>
+    <span class="status" id="status" data-state="idle" role="status">
+      <i class="dot"></i><span id="status-text">Ready</span>
+    </span>
+    <div class="grow"></div>
+    <label class="preset">Preset
+      <select id="preset" aria-label="Speed and memory preset"></select>
+    </label>
+    <span class="chip" title="Nothing is sent to the internet. Everything runs on this computer.">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 7V5a4 4 0 118 0v2h1v7H3V7h1zm2 0h4V5a2 2 0 10-4 0v2z" fill="currentColor"/></svg>
+      Offline
+    </span>
+    <div class="mem" title="Resident memory of this process against the 512 MB budget">
+      <span>RAM</span>
+      <div class="mem-bar"><i id="mem-fill"></i></div>
+      <span class="num" id="mem-text">- / 512 MB</span>
+    </div>
+    <button class="icon-btn" id="theme" type="button" aria-label="Switch between dark and light theme">
+      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M10 3a7 7 0 100 14V3z" fill="currentColor"/><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+    </button>
+  </header>
+
+  <main class="layout">
+    <section class="stage-col" aria-label="Live analysis">
+      <div class="stage" id="stage" data-mode="idle">
+        <canvas id="view" aria-label="The frame being analysed, with detected plates outlined"></canvas>
+        <div class="scan" aria-hidden="true"></div>
+        <div class="hud hud-tl" id="hud-time">00:00.0</div>
+        <div class="hud hud-tr"><span class="live-dot"></span><span id="hud-kind">analysing</span></div>
+
+        <div class="drop" id="drop" data-over="0">
+          <svg class="big" viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="6" y="16" width="52" height="34" rx="7" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M32 42V26m0 0l-7 7m7-7l7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 56h36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".5"/>
+          </svg>
+          <h1>Drop a dashcam video</h1>
+          <p>MP4 up to 4K. It stays on this computer and is analysed while it uploads.</p>
+          <div class="actions">
+            <button class="btn primary" id="choose" type="button">Choose a file</button>
+            <input type="file" id="file" accept="video/*,.mp4,.mov,.mkv,.m4v,.avi" hidden>
+          </div>
+          <div class="samples" id="samples" hidden>
+            <span>or try a sample</span>
+            <span id="sample-chips" class="samples"></span>
+          </div>
+        </div>
+        <div class="banner" id="banner" role="alert" hidden></div>
+      </div>
+
+      <section class="panel timeline" aria-label="Progress">
+        <div class="lane">
+          <span class="lane-label">Upload</span>
+          <div class="bar"><i id="up-fill"></i></div>
+          <span class="lane-val num" id="up-val">waiting for a file</span>
+        </div>
+        <div class="lane">
+          <span class="lane-label">Analysis</span>
+          <div class="bar bar-main"><i id="an-fill"></i><div class="pins" id="pins"></div></div>
+          <span class="lane-val num" id="an-val">waiting for a file</span>
+        </div>
+        <div class="tl-foot">
+          <div class="summary" id="summary" hidden></div>
+          <div class="grow"></div>
+          <button class="btn ghost" id="cancel" type="button" hidden>Stop</button>
+          <a class="btn" id="dl-json" href="#" download hidden>Download JSON</a>
+          <a class="btn" id="dl-csv" href="#" download hidden>Download CSV</a>
+          <button class="btn primary" id="again" type="button" hidden>Analyse another</button>
+        </div>
+      </section>
+
+      <section class="panel metrics" aria-label="Pipeline performance">
+        <div class="panel-h"><h2>Pipeline latency</h2><small>milliseconds per call, rolling average</small></div>
+        <div class="metrics-body">
+        <ul class="lat" id="lat">
+          <li data-key="decode"><span class="name">Decode (per video frame)</span><span class="track"><i></i></span><span class="val num">-</span></li>
+          <li data-key="gate"><span class="name">Change gate</span><span class="track"><i></i></span><span class="val num">-</span></li>
+          <li data-key="convert"><span class="name">Convert to full size</span><span class="track"><i></i></span><span class="val num">-</span></li>
+          <li data-key="detect"><span class="name">Plate detector</span><span class="track"><i></i></span><span class="val num">-</span></li>
+          <li data-key="ocr"><span class="name">Plate OCR</span><span class="track"><i></i></span><span class="val num">-</span></li>
+          <li data-key="track"><span class="name">Tracker and vote</span><span class="track"><i></i></span><span class="val num">-</span></li>
+          <li data-key="frame"><span class="name">Whole frame</span><span class="track"><i></i></span><span class="val num">-</span></li>
+        </ul>
+        <div class="tiles">
+          <div class="tile"><div class="k">Speed vs video</div><div class="v num" id="t-rtf">-</div></div>
+          <div class="tile"><div class="k">Frames analysed</div><div class="v num" id="t-proc">-</div></div>
+          <div class="tile"><div class="k">Skipped (unchanged)</div><div class="v num" id="t-skip">-</div></div>
+          <div class="tile"><div class="k">Elapsed</div><div class="v num" id="t-elapsed">-</div></div>
+        </div>
+        </div>
+      </section>
+    </section>
+
+    <aside class="findings" aria-label="Findings">
+      <section class="panel" id="plates" aria-labelledby="plates-h">
+        <div class="panel-h">
+          <h2 id="plates-h">Plates found</h2><span class="count num" id="count">0</span>
+          <small id="plates-note"></small>
+        </div>
+        <ul class="plate-list" id="plate-list">
+          <li class="empty" id="plates-empty">Plates appear here as soon as they are read.</li>
+        </ul>
+      </section>
+      <section class="panel" id="ocr" aria-labelledby="ocr-h">
+        <div class="panel-h"><h2 id="ocr-h">Live OCR stream</h2><small>every reading, before voting</small></div>
+        <ul class="feed" id="feed" aria-label="Individual OCR readings, newest first"></ul>
+      </section>
+    </aside>
+  </main>
+
+  <div class="sr-only" id="live" aria-live="polite" aria-atomic="true"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

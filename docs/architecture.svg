@@ -1,0 +1,382 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1720" width="2400" height="1720" role="img" aria-label="Plate Stream architecture: one-time model setup, two entry points, the per-frame pipeline across the decoder and main threads, end-of-video voting, the browser to server protocol of the live UI, and measured memory and latency.">
+<defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#EEF2F6" stroke-width="1"/></pattern><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#15202B"/></marker><marker id="arrowTeal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0E8F82"/></marker><marker id="arrowOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C2570C"/></marker><marker id="arrowDim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5A6878"/></marker><marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C0392B"/></marker></defs>
+<rect x="0" y="0" width="2400" height="1720" rx="0" fill="#FBFCFD" stroke="#FBFCFD" stroke-width="0"/>
+<rect x="0" y="0" width="2400" height="1720" fill="url(#grid)"/>
+<text x="40" y="66" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="32" font-weight="750" fill="#15202B" text-anchor="start">Plate Stream</text>
+<text x="40" y="96" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="16" font-weight="400" fill="#5A6878" text-anchor="start">Offline number-plate recognition from 4K dashcam video: architecture, protocols and measured numbers</text>
+<path d="M 1430 76 L 1476 76" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="1486" y="80" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">pipeline data</text>
+<path d="M 1629.57 76 L 1675.57 76" fill="none" stroke="#5A6878" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#arrowDim)"/>
+<text x="1685.57" y="80" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">control (skip, touch)</text>
+<path d="M 1884.26 76 L 1930.26 76" fill="none" stroke="#0E8F82" stroke-width="1.6" stroke-dasharray="8 5" marker-end="url(#arrowTeal)"/>
+<text x="1940.26" y="80" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">live UI events / HTTP</text>
+<path d="M 2138.95 76 L 2184.95 76" fill="none" stroke="#C2570C" stroke-width="1.6" stroke-dasharray="8 5" marker-end="url(#arrowOrange)"/>
+<text x="2194.95" y="80" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">internet (setup only)</text>
+<rect x="1430" y="96" width="22" height="16" rx="4" fill="#E6F5F2" stroke="#0E8F82" stroke-width="1.6"/>
+<text x="1460" y="109" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">ONNX model</text>
+<rect x="1580" y="96" width="22" height="16" rx="4" fill="#F1F4F8" stroke="#5A6878" stroke-width="1.3"/>
+<text x="1610" y="109" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">file / store</text>
+<rect x="1720" y="96" width="22" height="16" rx="4" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1750" y="109" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">code component</text>
+<text x="1910" y="109" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">times = mean per call, clip 7378, balanced</text>
+<rect x="40" y="160" width="620" height="280" rx="16" fill="none" stroke="#C2570C" stroke-width="1.4" stroke-dasharray="8 6"/>
+<rect x="58" y="148" width="366.74" height="24" rx="6" fill="#FBFCFD" stroke="#FBFCFD" stroke-width="0"/>
+<text x="67" y="165" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#C2570C" text-anchor="start">1  One-time setup (the only step with internet)</text>
+<rect x="62" y="200" width="175" height="150" rx="10" fill="#FFF3EA" stroke="#C2570C" stroke-width="1.3"/>
+<text x="74" y="223" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">GitHub releases</text>
+<text x="74" y="244" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">open-image-models</text>
+<text x="74" y="261" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">cnn-ocr-lp</text>
+<text x="74" y="278" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">fixed HTTPS URLs</text>
+<rect x="262" y="200" width="185" height="150" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="274" y="223" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">setup_models.py</text>
+<text x="274" y="244" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">urllib download</text>
+<text x="274" y="261" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">SHA-256 check</text>
+<text x="274" y="278" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">skips files already</text>
+<text x="274" y="295" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">verified</text>
+<rect x="472" y="200" width="170" height="220" rx="10" fill="#F1F4F8" stroke="#5A6878" stroke-width="1.3"/>
+<text x="484" y="223" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">models/  13 MB</text>
+<text x="484" y="244" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">detector .onnx</text>
+<text x="484" y="261" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  7.8 MB</text>
+<text x="484" y="278" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">OCR .onnx</text>
+<text x="484" y="295" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  5.3 MB</text>
+<text x="484" y="312" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">OCR config .yaml</text>
+<text x="484" y="329" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">read from disk only</text>
+<path d="M 237 275.0 L 262 275.0" fill="none" stroke="#C2570C" stroke-width="1.6" stroke-dasharray="8 5" marker-end="url(#arrowOrange)"/>
+<rect x="229.2625" y="256.0" width="40.475" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="249.5" y="268.0" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#C2570C" text-anchor="middle">HTTPS</text>
+<path d="M 447 275.0 L 472 310.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="436.215" y="273.5" width="46.57" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="459.5" y="285.5" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">verify</text>
+<rect x="690" y="160" width="1670" height="950" rx="16" fill="none" stroke="#0E8F82" stroke-width="1.4" stroke-dasharray="2 0"/>
+<rect x="708" y="148" width="500.3" height="24" rx="6" fill="#FBFCFD" stroke="#FBFCFD" stroke-width="0"/>
+<text x="717" y="165" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0E8F82" text-anchor="start">One Python process: CPU only, no network, peak RAM at most 512 MB</text>
+<rect x="720" y="200" width="255" height="105" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="732" y="223" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">CLI: python main.py &lt;video&gt;</text>
+<text x="732" y="244" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">--preset low-mem | balanced | fast</text>
+<text x="732" y="261" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">exit 2 bad video, 3 no model</text>
+<rect x="720" y="320" width="255" height="105" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="732" y="343" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">UI: python -m ui</text>
+<text x="732" y="364" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">stdlib HTTP, 127.0.0.1:8765</text>
+<text x="732" y="381" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">one clip at a time</text>
+<rect x="1010" y="200" width="270" height="225" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1022" y="223" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Before numpy loads</text>
+<text x="1022" y="244" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">OPENBLAS / OMP / MKL threads = 1</text>
+<text x="1022" y="261" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">(otherwise numpy commits</text>
+<text x="1022" y="278" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start"> about 500 MB on Windows)</text>
+<text x="1022" y="295" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">cv2.setNumThreads(4)</text>
+<text x="1022" y="312" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">anpr/__init__ stays light</text>
+<rect x="1315" y="200" width="315" height="225" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1327" y="223" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Config (frozen dataclass)</text>
+<text x="1327" y="244" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">balanced: 4 decoder threads,</text>
+<text x="1327" y="261" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  5 fps, deep pass 1 in 3</text>
+<text x="1327" y="278" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">fast: 4 threads, 4 fps,</text>
+<text x="1327" y="295" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  deep 1 in 4, one OCR variant</text>
+<text x="1327" y="312" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">low-mem: 1 thread, 3 fps, quick only</text>
+<text x="1327" y="329" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">threads capped at physical cores</text>
+<rect x="1665" y="200" width="320" height="225" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1677" y="223" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">pipeline.run(...)</text>
+<text x="1677" y="244" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">run(config,</text>
+<text x="1677" y="261" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  source_factory=None,</text>
+<text x="1677" y="278" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  observer=None,</text>
+<text x="1677" y="295" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  cancel=None)</text>
+<text x="1677" y="312" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">-&gt; RunSummary</text>
+<text x="1677" y="329" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">   + JSON + CSV</text>
+<rect x="2020" y="200" width="315" height="225" rx="10" fill="#E6F5F2" stroke="#0E8F82" stroke-width="1.6"/>
+<text x="2032" y="223" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#0E8F82" text-anchor="start">ONNX Runtime 1.32, CPU</text>
+<text x="2032" y="244" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">intra-op threads 4, inter-op 1</text>
+<text x="2032" y="261" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">graph optimisation: all</text>
+<text x="2032" y="278" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">memory arena off by default</text>
+<text x="2032" y="295" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  (on: +146 MB on clip 2)</text>
+<text x="2032" y="312" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">each model loaded once</text>
+<text x="2032" y="329" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">two sessions: detector, OCR</text>
+<path d="M 975 252.5 L 995 252 L 995 280 L 1010 280" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M 975 372.5 L 995 372 L 995 340 L 1010 340" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="895.3825" y="436" width="89.235" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="940" y="448" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">same start-up</text>
+<path d="M 1280 312.5 L 1315 312.5" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M 1630 312.5 L 1665 312.5" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1605.93" y="293.5" width="83.14" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1647.5" y="305.5" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">build_config</text>
+<path d="M 1985 312.5 L 2020 312.5" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1985.31" y="293.5" width="34.38" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="2002.5" y="305.5" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">load</text>
+<path d="M 557 200 L 557 136 L 2177 136 L 2177 200" fill="none" stroke="#5A6878" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#arrowDim)"/>
+<rect x="1217.8625" y="120" width="284.27500000000003" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1360" y="132" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">model files, read once at start (no download)</text>
+<rect x="712" y="470" width="1628" height="615" rx="16" fill="none" stroke="#B9C5D2" stroke-width="1.4" stroke-dasharray="7 6"/>
+<rect x="730" y="458" width="173.82000000000002" height="24" rx="6" fill="#FBFCFD" stroke="#FBFCFD" stroke-width="0"/>
+<text x="739" y="475" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#5A6878" text-anchor="start">2  Per-frame pipeline</text>
+<rect x="722" y="500" width="1608" height="180" rx="10" fill="#F6F9FB" stroke="#F6F9FB" stroke-width="0"/>
+<rect x="722" y="695" width="1608" height="210" rx="10" fill="#F6F9FB" stroke="#F6F9FB" stroke-width="0"/>
+<text x="732" y="520" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#5A6878" text-anchor="start">DECODER THREAD (prefetch)</text>
+<text x="732" y="715" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#5A6878" text-anchor="start">MAIN / JOB THREAD, every sampled frame</text>
+<text x="732" y="925" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#5A6878" text-anchor="start">END OF VIDEO (and live snapshots for the UI)</text>
+<rect x="62" y="520" width="240" height="150" rx="10" fill="#F1F4F8" stroke="#5A6878" stroke-width="1.3"/>
+<text x="74" y="543" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Video source</text>
+<text x="74" y="564" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">file path (CLI, sample clips)</text>
+<text x="74" y="581" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">or GrowingFile reader:</text>
+<text x="74" y="598" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">an upload still arriving</text>
+<text x="74" y="615" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">moov first: read while uploading</text>
+<text x="62" y="505" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#5A6878" text-anchor="start">INPUT</text>
+<rect x="742" y="530" width="300" height="140" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="754" y="553" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">PyAV / FFmpeg HEVC decode</text>
+<text x="754" y="574" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">every frame: 1,801 per clip</text>
+<text x="754" y="591" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">4 frame threads</text>
+<text x="754" y="608" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">27.8 ms per frame</text>
+<text x="754" y="625" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">auto threads alone: 624 MB</text>
+<rect x="1067" y="530" width="270" height="140" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1079" y="553" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Sampling grid</text>
+<text x="1079" y="574" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">5 fps = 1 frame in 6</text>
+<text x="1079" y="591" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">160 x 90 grey thumbnail</text>
+<text x="1079" y="608" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">time = pts x time_base</text>
+<text x="1079" y="625" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">unsampled frames: no pixels</text>
+<rect x="1362" y="530" width="255" height="140" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1374" y="553" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">prefetch() queue</text>
+<text x="1374" y="574" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">depth 1, about 12 MB YUV</text>
+<text x="1374" y="591" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">decoding overlaps models</text>
+<text x="1374" y="608" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">errors re-raised in main</text>
+<rect x="1642" y="530" width="330" height="140" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1654" y="553" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">LiveReporter (UI only)</text>
+<text x="1654" y="574" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">frame: 960 px JPEG q70 + boxes</text>
+<text x="1654" y="591" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">reading: 128 px crop + char p</text>
+<text x="1654" y="608" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">plates every 0.35 s, stats every 1 s</text>
+<text x="1654" y="625" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">CLI uses NullReporter: no cost</text>
+<path d="M 302 595.0 L 722 595 L 742 600.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="499.7625" y="576" width="40.475" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="520" y="588" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">bytes</text>
+<path d="M 1042 600.0 L 1067 600.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1031.215" y="581.0" width="46.57" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1054.5" y="593.0" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">frames</text>
+<path d="M 1337 600.0 L 1362 600.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1323.1675" y="581.0" width="52.665" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1349.5" y="593.0" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">sampled</text>
+<rect x="742" y="735" width="215" height="150" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="754" y="758" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Change gate</text>
+<text x="754" y="779" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">mean |thumb diff| &lt; 2.0</text>
+<text x="754" y="796" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">-&gt; skip, 0.3 ms</text>
+<text x="754" y="813" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">forced after 10 skips</text>
+<text x="754" y="830" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">clip 2: 177 of 301 skipped</text>
+<rect x="977" y="735" width="175" height="150" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="989" y="758" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Convert</text>
+<text x="989" y="779" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">YUV -&gt; 4K BGR</text>
+<text x="989" y="796" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">25 MB, 3.1 ms</text>
+<text x="989" y="813" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">one frame alive</text>
+<text x="989" y="830" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">freed after crops</text>
+<rect x="1172" y="735" width="320" height="150" rx="10" fill="#E6F5F2" stroke="#0E8F82" stroke-width="1.6"/>
+<text x="1184" y="758" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#0E8F82" text-anchor="start">Plate detector  YOLOv9-t</text>
+<text x="1184" y="779" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">quick: 1 x 640 letterbox, 109 ms</text>
+<text x="1184" y="796" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">deep (1 in 3): 1280 px wide,</text>
+<text x="1184" y="813" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  3 overlapping tiles, 300 ms</text>
+<text x="1184" y="830" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">NMS inside the ONNX graph</text>
+<text x="1184" y="847" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">+ tile de-duplication</text>
+<rect x="1512" y="735" width="200" height="150" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1524" y="758" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Box filters</text>
+<text x="1524" y="779" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">score &gt;= 0.30</text>
+<text x="1524" y="796" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">width &gt;= 40 px (4K)</text>
+<text x="1524" y="813" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">aspect 0.9 to 2.8</text>
+<text x="1524" y="830" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">skip top 15%, bottom 5%</text>
+<rect x="1732" y="735" width="260" height="150" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1744" y="758" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Crop from full 4K</text>
+<text x="1744" y="779" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">+8% padding, clamped</text>
+<text x="1744" y="796" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">A: as is</text>
+<text x="1744" y="813" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">B: white balance + CLAHE</text>
+<text x="1744" y="830" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">-&gt; 64 x 128 RGB uint8</text>
+<rect x="2012" y="735" width="308" height="150" rx="10" fill="#E6F5F2" stroke="#0E8F82" stroke-width="1.6"/>
+<text x="2024" y="758" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#0E8F82" text-anchor="start">Plate OCR  CCT-S</text>
+<text x="2024" y="779" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">in  (N, 64, 128, 3) uint8</text>
+<text x="2024" y="796" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">out (N, 10, 37) probabilities</text>
+<text x="2024" y="813" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">A and B averaged</text>
+<text x="2024" y="830" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">88 ms per frame (all plates)</text>
+<path d="M 1489.5 670 L 1490 700 L 849 700 L 849.5 735" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1110.145" y="684" width="119.71000000000001" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1170" y="696" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">next sampled frame</text>
+<path d="M 957 810.0 L 977 810.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="940.6675" y="790" width="52.665" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="967" y="802" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">changed</text>
+<path d="M 1152 810.0 L 1172 810.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1147.8575" y="790" width="28.285" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1162" y="802" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">BGR</text>
+<path d="M 1492 810.0 L 1512 810.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M 1712 810.0 L 1732 810.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M 1992 810.0 L 2012 810.0" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="2012" y="945" width="308" height="125" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="2024" y="968" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Reading + Tracker</text>
+<text x="2024" y="989" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">conf = det score x mean char p</text>
+<text x="2024" y="1006" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">match IoU &gt;= 0.2, else text 1 edit</text>
+<text x="2024" y="1023" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">end after 3 missed frames</text>
+<text x="2024" y="1040" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">keep best 15 readings per track</text>
+<rect x="1690" y="945" width="300" height="125" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1702" y="968" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Per-track vote</text>
+<text x="1702" y="989" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">sum slot probabilities x weight</text>
+<text x="1702" y="1006" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">weight = conf x sharpness</text>
+<text x="1702" y="1023" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">dominant text length wins</text>
+<text x="1702" y="1040" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">share = winner's mean probability</text>
+<rect x="1352" y="945" width="318" height="125" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1364" y="968" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Format resolve (California)</text>
+<text x="1364" y="989" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">1ABC234 (1.0)  1A23456 (0.95)</text>
+<text x="1364" y="1006" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">ABC123, 123ABC (0.9), other (0.75)</text>
+<text x="1364" y="1023" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">fix a slot only if it costs &lt;= log 3</text>
+<text x="1364" y="1040" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">0/O 1/I 8/B 5/S 2/Z 6/G cheap</text>
+<rect x="1052" y="945" width="280" height="125" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1064" y="968" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Merge duplicates</text>
+<text x="1064" y="989" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">same text -&gt; one plate</text>
+<text x="1064" y="1006" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">1 edit apart and</text>
+<text x="1064" y="1023" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  &lt; half the readings or &lt;= 2 s</text>
+<text x="1064" y="1040" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">votes pooled, track ids kept</text>
+<rect x="742" y="945" width="290" height="125" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="754" y="968" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Accept + write</text>
+<text x="754" y="989" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">confidence &gt;= 0.35 and</text>
+<text x="754" y="1006" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  &gt;= 2 readings or &gt;= 0.65</text>
+<text x="754" y="1023" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">console, &lt;stem&gt;.plates.json/csv</text>
+<text x="754" y="1040" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">run report: timings, memory</text>
+<path d="M 2166.0 885 L 2166.0 945" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="2175.62" y="908" width="58.760000000000005" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="2205" y="920" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">readings</text>
+<path d="M 2012 1007.5 L 1990 1007.5" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M 1690 1007.5 L 1670 1007.5" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M 1352 1007.5 L 1332 1007.5" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M 1052 1007.5 L 1032 1007.5" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M 849.5 885 L 849 912 L 2060 912 L 2060 945" fill="none" stroke="#5A6878" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#arrowDim)"/>
+<rect x="1385.29" y="896" width="229.42000000000002" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1500" y="908" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">unchanged: touch() extends last_seen</text>
+<path d="M 2290 945 L 2290 905 L 2345 905 L 2345 600 L 1972 600.0" fill="none" stroke="#0E8F82" stroke-width="1.6" stroke-dasharray="8 5" marker-end="url(#arrowTeal)"/>
+<rect x="2294.715" y="748" width="46.57" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="2318" y="760" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#0E8F82" text-anchor="middle">events</text>
+<rect x="62" y="735" width="600" height="335" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="74" y="758" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Measurement (every run, both modes)</text>
+<text x="74" y="779" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">StageTimers: every call timed -&gt; mean, p50, p95, max per component</text>
+<text x="74" y="796" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">decode time recorded for each of the 1,801 source frames</text>
+<text x="74" y="813" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">MemoryMonitor: resident memory sampled every 50 ms in a thread,</text>
+<text x="74" y="830" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  plus the OS peak counter (Windows peak_wset, Linux VmHWM)</text>
+<text x="74" y="847" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">peak private (commit) memory reported beside resident memory</text>
+<text x="74" y="864" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">throughput: processing time / video length = real-time factor</text>
+<text x="74" y="881" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">frames: sampled, analysed, skipped by the gate, detector passes</text>
+<text x="74" y="898" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">benchmark.py: one fresh process per run, memory also measured</text>
+<text x="74" y="915" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  from outside the process tree (agrees within 5 MB)</text>
+<text x="74" y="932" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">evaluate.py: plates found, precision, character accuracy</text>
+<text x="74" y="949" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  against eval/ground_truth (draft, labelled from crops)</text>
+<text x="74" y="966" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">tests: 137 (unit + integration), ruff clean</text>
+<text x="74" y="983" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">hard-rule tests: no torch / network imports at runtime</text>
+<text x="74" y="1000" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">ui_resilience_check.py: dropped chunk, dead network, reload</text>
+<text x="74" y="1017" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">ui_screenshots.py: whole UI run in Chrome, no console errors</text>
+<text x="74" y="1034" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">ffprobe facts: HEVC Main, 3840x2160, 30 fps, GOP 30, no B-frames</text>
+<text x="74" y="1051" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">decoder threads 1 / 4 / auto: 138 / 229 / 624 MB (ffmpeg CLI)</text>
+<path d="M 662 900 L 732 900" fill="none" stroke="#5A6878" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#arrowDim)"/>
+<rect x="40" y="1150" width="1495" height="545" rx="16" fill="none" stroke="#0E8F82" stroke-width="1.4" stroke-dasharray="8 6"/>
+<rect x="58" y="1138" width="492.88" height="24" rx="6" fill="#FBFCFD" stroke="#FBFCFD" stroke-width="0"/>
+<text x="67" y="1155" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0E8F82" text-anchor="start">3  Live UI protocol (python -m ui, same process as the pipeline)</text>
+<rect x="65" y="1185" width="220" height="62" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="77" y="1208" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Browser page</text>
+<text x="77" y="1229" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">app.js, no framework, no CDN</text>
+<rect x="765" y="1185" width="220" height="62" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="777" y="1208" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">HTTP server</text>
+<text x="777" y="1229" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">ThreadingHTTPServer, stdlib</text>
+<line x1="175" y1="1247" x2="175" y2="1680" stroke="#5A6878" stroke-width="1.3" stroke-dasharray="4 5"/>
+<line x1="875" y1="1247" x2="875" y2="1680" stroke="#5A6878" stroke-width="1.3" stroke-dasharray="4 5"/>
+<path d="M 179 1278 L 871 1278" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="525.0" y="1272" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#15202B" text-anchor="middle">GET /  and  /static/app.js, app.css</text>
+<path d="M 179 1315 L 871 1315" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="525.0" y="1309" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#15202B" text-anchor="middle">GET /api/info  -&gt;  presets, sample clips, 512 MB</text>
+<path d="M 179 1352 L 871 1352" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="525.0" y="1346" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#15202B" text-anchor="middle">POST /api/jobs {name, size, preset}  -&gt;  {id}  or 409 busy</text>
+<path d="M 179 1389 L 871 1389" fill="none" stroke="#0E8F82" stroke-width="1.6" marker-end="url(#arrowTeal)"/>
+<text x="525.0" y="1383" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#0E8F82" text-anchor="middle">GET /api/jobs/{id}/events   SSE, held open</text>
+<path d="M 179 1426 L 871 1426" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="525.0" y="1420" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#15202B" text-anchor="middle">PUT .../data?offset=N   4 MB chunks x 80  -&gt;  {received}</text>
+<line x1="179" y1="1463" x2="871" y2="1463" stroke="#5A6878" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="525.0" y="1457" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#5A6878" text-anchor="middle">chunk retried 5x; 409 gives 'received' to resume; 410 run ended</text>
+<path d="M 871 1500 L 179 1500" fill="none" stroke="#0E8F82" stroke-width="1.6" marker-end="url(#arrowTeal)"/>
+<text x="525.0" y="1494" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#0E8F82" text-anchor="middle">SSE: start, frame, progress, reading, plates, stats</text>
+<path d="M 871 1537 L 179 1537" fill="none" stroke="#0E8F82" stroke-width="1.6" marker-end="url(#arrowTeal)"/>
+<text x="525.0" y="1531" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#0E8F82" text-anchor="middle">SSE: done | error | cancelled, then the stream closes</text>
+<path d="M 179 1574 L 871 1574" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="525.0" y="1568" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#15202B" text-anchor="middle">GET /api/jobs/{id}/result.json | result.csv</text>
+<path d="M 179 1611 L 871 1611" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="525.0" y="1605" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#15202B" text-anchor="middle">POST .../cancel   (Stop button; beacon on tab close)</text>
+<path d="M 179 1648 L 871 1648" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="525.0" y="1642" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12" font-weight="500" fill="#15202B" text-anchor="middle">GET .../progress  -&gt;  {received, state}   (resync after a failure)</text>
+<rect x="1010" y="1185" width="505" height="78" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1022" y="1208" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">JobManager</text>
+<text x="1022" y="1229" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">one run at a time; a new request replaces a run</text>
+<text x="1022" y="1246" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">whose upload has been silent for 15 s</text>
+<rect x="1010" y="1275" width="505" height="95" rx="10" fill="#F1F4F8" stroke="#5A6878" stroke-width="1.3"/>
+<text x="1022" y="1298" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">GrowingFile (temp file + condition variable)</text>
+<text x="1022" y="1319" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">chunks must arrive in order; retried chunks de-duplicated</text>
+<text x="1022" y="1336" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">a read past the received bytes waits for more</text>
+<text x="1022" y="1353" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">MP4 with moov before mdat: 'not seekable' while uploading</text>
+<rect x="1010" y="1382" width="505" height="62" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1022" y="1405" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Upload watchdog</text>
+<text x="1022" y="1426" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">no new bytes for 45 s -&gt; run ended, page told why</text>
+<rect x="1010" y="1456" width="505" height="95" rx="10" fill="#F1F4F8" stroke="#5A6878" stroke-width="1.3"/>
+<text x="1022" y="1479" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Job event log</text>
+<text x="1022" y="1500" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">append-only, at most 5,000 events, plain JSON</text>
+<text x="1022" y="1517" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">only the newest unsent frame is kept</text>
+<text x="1022" y="1534" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">Last-Event-ID: a reconnecting page resumes</text>
+<rect x="1010" y="1563" width="505" height="117" rx="10" fill="#FFFFFF" stroke="#15202B" stroke-width="1.3"/>
+<text x="1022" y="1586" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14.5" font-weight="650" fill="#15202B" text-anchor="start">Runner thread</text>
+<text x="1022" y="1607" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">pipeline.run(config,</text>
+<text x="1022" y="1624" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  source_factory=GrowingFile.reader,</text>
+<text x="1022" y="1641" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">  observer=job.emit, cancel=job.cancel_event)</text>
+<text x="1022" y="1658" font-family="Cascadia Mono, Consolas, Menlo, monospace" font-size="12.5" font-weight="400" fill="#15202B" text-anchor="start">temp upload deleted when the run ends</text>
+<path d="M 879 1352 L 1010 1224" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="924.715" y="1260" width="46.57" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="948" y="1272" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">create</text>
+<path d="M 879 1426 L 1010 1345" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="924.715" y="1360" width="46.57" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="948" y="1372" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">append</text>
+<path d="M 1010 1500 L 879 1500" fill="none" stroke="#0E8F82" stroke-width="1.6" stroke-dasharray="8 5" marker-end="url(#arrowTeal)"/>
+<rect x="918.715" y="1482" width="46.57" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="942" y="1494" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#0E8F82" text-anchor="middle">events</text>
+<path d="M 1515 1600 L 1548 1600 L 1548 1112" fill="none" stroke="#15202B" stroke-width="1.6" marker-end="url(#arrow)"/>
+<rect x="1500.335" y="1090" width="95.33" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1548" y="1102" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#5A6878" text-anchor="middle">runs section 2</text>
+<path d="M 1972 600 L 1985 600 L 1985 640 L 2000 640 L 2000 1132 L 1540 1132 L 1540 1500 L 1517 1500" fill="none" stroke="#0E8F82" stroke-width="1.6" stroke-dasharray="8 5" marker-end="url(#arrowTeal)"/>
+<rect x="1734.525" y="1116" width="70.95" height="16" rx="4" fill="#FBFCFD" opacity="0.92"/>
+<text x="1770" y="1128" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#0E8F82" text-anchor="middle">job.emit()</text>
+<rect x="1575" y="1150" width="785" height="545" rx="16" fill="none" stroke="#B9C5D2" stroke-width="1.4" stroke-dasharray="7 6"/>
+<rect x="1593" y="1138" width="418.68" height="24" rx="6" fill="#FBFCFD" stroke="#FBFCFD" stroke-width="0"/>
+<text x="1602" y="1155" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#5A6878" text-anchor="start">4  Measured on the supplied clips (i9-11950H, 8 cores)</text>
+<text x="1600" y="1190" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#15202B" text-anchor="start">Peak resident memory (MB)</text>
+<text x="1600" y="1221" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">low-mem, command line</text>
+<rect x="1790" y="1208" width="218.83076923076925" height="18" rx="4" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="2016.8307692307692" y="1222" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">254</text>
+<text x="1600" y="1251" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">balanced, command line</text>
+<rect x="1790" y="1238" width="317.04615384615386" height="18" rx="4" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="2115.046153846154" y="1252" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">368</text>
+<text x="1600" y="1281" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">balanced, with the live UI</text>
+<rect x="1790" y="1268" width="343.75384615384615" height="18" rx="4" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="2141.753846153846" y="1282" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">399</text>
+<text x="1600" y="1311" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">decoder alone, auto threads</text>
+<rect x="1790" y="1298" width="537.6" height="18" rx="4" fill="#C0392B" stroke="#C0392B" stroke-width="0"/>
+<text x="2335.6" y="1312" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#C0392B" text-anchor="start">624</text>
+<line x1="2231.1076923076926" y1="1198" x2="2231.1076923076926" y2="1328" stroke="#C0392B" stroke-width="1.6" stroke-dasharray="5 4"/>
+<text x="2225.1076923076926" y="1344" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#C0392B" text-anchor="end">512 MB budget</text>
+<text x="1600" y="1360" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="14" font-weight="650" fill="#15202B" text-anchor="start">Latency per call (ms), clip 7378, balanced</text>
+<text x="1600" y="1390" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">Decode, per source frame</text>
+<rect x="1820" y="1379" width="31.275000000000002" height="14" rx="3" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="1859.275" y="1391" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">27.8</text>
+<text x="1600" y="1414" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">Change gate</text>
+<rect x="1820" y="1403" width="2" height="14" rx="3" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="1830" y="1415" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">0.3</text>
+<text x="1600" y="1438" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">Convert to 4K image</text>
+<rect x="1820" y="1427" width="3.4875" height="14" rx="3" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="1831.4875" y="1439" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">3.1</text>
+<text x="1600" y="1462" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">Detector, quick pass</text>
+<rect x="1820" y="1451" width="122.625" height="14" rx="3" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="1950.625" y="1463" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">109</text>
+<text x="1600" y="1486" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">Detector, deep pass</text>
+<rect x="1820" y="1475" width="337.95" height="14" rx="3" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="2165.95" y="1487" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">300.4</text>
+<text x="1600" y="1510" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">OCR, all plates in frame</text>
+<rect x="1820" y="1499" width="99.22500000000001" height="14" rx="3" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="1927.225" y="1511" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">88.2</text>
+<text x="1600" y="1534" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">Tracker update</text>
+<rect x="1820" y="1523" width="2" height="14" rx="3" fill="#0E8F82" stroke="#0E8F82" stroke-width="0"/>
+<text x="1830" y="1535" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">0.2</text>
+<text x="1600" y="1558" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#5A6878" text-anchor="start">Whole frame through models</text>
+<rect x="1820" y="1547" width="301.05" height="14" rx="3" fill="#15202B" stroke="#15202B" stroke-width="0"/>
+<text x="2129.05" y="1559" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="650" fill="#15202B" text-anchor="start">267.6</text>
+<text x="1600" y="1590" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="650" fill="#15202B" text-anchor="start">balanced: 13 of 14 readable plates found (93%), 100% precision, no duplicates</text>
+<text x="1600" y="1610" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">a 60 s clip takes 60 to 78 s; frames the gate skips cost 0.3 ms</text>
+<text x="1600" y="1630" font-family="Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#5A6878" text-anchor="start">budget per sampled frame at 5 fps: 200 ms; at 3 fps: 333 ms</text>
+</svg>

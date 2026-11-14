@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+models/*.onnx
+*.mp4
+output/debug/
+tests/data/
+output/ui/
+plate-stream-*/
+.claude/

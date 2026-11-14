@@ -1,0 +1,7 @@
+-r requirements.txt
+onnx==1.23.2
+pytest==9.2.0
+ruff==0.17.5
+
+# optional: screenshots of the live UI (scripts/ui_screenshots.py) use the system Chrome
+playwright==1.65.2

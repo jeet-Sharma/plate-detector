@@ -1,0 +1,15 @@
+{
+  "video": "REC20261007-174724-7378.mp4",
+  "status": "DRAFT labelled by Claude from enlarged full-resolution crops on 2026-11-14. A person has not yet checked it against the video. Note: Claude had seen this clip's raw pipeline output before choosing the confidence thresholds, so it is not a clean held-out set.",
+  "plates": [
+    {"plate": "9NZW821", "first_seen": 0.0, "note": "black SUV, continues from clip 1"},
+    {"plate": "EABLEB", "first_seen": 0.0, "note": "vanity plate, continues from clip 1"},
+    {"plate": "9KTA262", "first_seen": 0.6, "note": "Tesla, very clear, visible about 16 s"},
+    {"plate": "9ECF543", "alternatives": ["9FCF543"], "first_seen": 1.8, "note": "dealer-style frame; second character looks like E or F"},
+    {"plate": "7ZZV186", "first_seen": 10.2, "note": "red Toyota, visible until it drops below the bonnet at about 21.2 s"}
+  ],
+  "unreadable": [
+    {"approx_text": "8ZRB417", "first_seen": 1.8, "note": "blurry plate seen for under a second"},
+    {"approx_text": "JYFLSS", "first_seen": 20.6, "note": "dark vehicle, motion-blurred"}
+  ]
+}

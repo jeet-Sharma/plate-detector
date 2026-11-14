@@ -1,0 +1,19 @@
+{
+  "video": "REC20261007-174623-7377.mp4",
+  "status": "DRAFT labelled by Claude from enlarged full-resolution crops on 2026-11-14. A person has not yet checked it against the video.",
+  "plates": [
+    {"plate": "9VCA051", "first_seen": 0.0, "note": "grey Honda CR-V turning right; visible about 1 s; tilted"},
+    {"plate": "8BFZ134", "first_seen": 38.6, "note": "clear"},
+    {"plate": "9NCM345", "first_seen": 44.2, "note": "tilted, close"},
+    {"plate": "7ZZV186", "first_seen": 46.2, "note": "red Toyota, same car as in clip 2"},
+    {"plate": "9XTN530", "alternatives": ["9YTN530"], "first_seen": 52.8, "note": "borderline: second character looks like X or Y"},
+    {"plate": "9DJE625", "first_seen": 52.8, "note": "clear"},
+    {"plate": "8D94661", "first_seen": 55.2, "note": "California motorcycle format (digit, letter, five digits)"},
+    {"plate": "EABLEB", "first_seen": 57.0, "note": "vanity plate, all letters, crisp"},
+    {"plate": "9NZW821", "first_seen": 59.4, "note": "black SUV, continues into clip 2"}
+  ],
+  "unreadable": [
+    {"approx_text": "6CFK631", "first_seen": 46.2, "note": "plate present but too blurry for a person to read"},
+    {"approx_text": "9KTA262", "first_seen": 59.4, "note": "only a sliver at the right edge of the last frames"}
+  ]
+}

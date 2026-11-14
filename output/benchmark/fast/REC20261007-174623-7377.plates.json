@@ -1,0 +1,243 @@
+{
+  "plates": [
+    {
+      "plate": "8BFZ134",
+      "first_seen": "00:38.767",
+      "last_seen": "00:40.000",
+      "confidence": 0.598,
+      "readings": 6
+    },
+    {
+      "plate": "9NCH345",
+      "first_seen": "00:45.000",
+      "last_seen": "00:45.000",
+      "confidence": 0.71,
+      "readings": 1
+    },
+    {
+      "plate": "7ZZV187",
+      "first_seen": "00:46.000",
+      "last_seen": "00:48.000",
+      "confidence": 0.488,
+      "readings": 3
+    },
+    {
+      "plate": "9XTN530",
+      "first_seen": "00:52.767",
+      "last_seen": "00:53.000",
+      "confidence": 0.459,
+      "readings": 2
+    },
+    {
+      "plate": "9DJE625",
+      "first_seen": "00:53.267",
+      "last_seen": "00:53.767",
+      "confidence": 0.397,
+      "readings": 3
+    },
+    {
+      "plate": "8D94661",
+      "first_seen": "00:57.500",
+      "last_seen": "00:59.000",
+      "confidence": 0.427,
+      "readings": 6
+    },
+    {
+      "plate": "EABLEB",
+      "first_seen": "00:58.000",
+      "last_seen": "01:00.000",
+      "confidence": 0.387,
+      "readings": 4
+    },
+    {
+      "plate": "9NZW821",
+      "first_seen": "01:00.000",
+      "last_seen": "01:00.000",
+      "confidence": 0.697,
+      "readings": 1
+    }
+  ],
+  "run": {
+    "version": "0.1.0",
+    "video": {
+      "path": "C:\\Users\\dell\\Documents\\plate-detector\\REC20261007-174623-7377.mp4",
+      "width": 3840,
+      "height": 2160,
+      "fps": 30.0,
+      "duration_s": 60.03,
+      "codec": "hevc"
+    },
+    "preset": "fast",
+    "settings": {
+      "video_path": "C:\\Users\\dell\\Documents\\plate-detector\\REC20261007-174623-7377.mp4",
+      "out_dir": "C:\\Users\\dell\\Documents\\plate-detector\\output\\benchmark\\fast",
+      "preset": "fast",
+      "sample_fps": 4.0,
+      "decode_threads": 4,
+      "threads": 4,
+      "static_threshold": 2.0,
+      "max_consecutive_skips": 10,
+      "prefetch_depth": 1,
+      "max_seconds": 0.0,
+      "ort_arena": false,
+      "det_mode": "tiled",
+      "deep_every": 4,
+      "det_conf": 0.3,
+      "min_aspect": 0.9,
+      "max_aspect": 2.8,
+      "det_width": 1280,
+      "tile_size": 640,
+      "tile_overlap": 96,
+      "min_plate_width": 40,
+      "ignore_bottom": 0.05,
+      "ignore_top": 0.15,
+      "crop_padding": 0.08,
+      "enhance": false,
+      "min_chars": 3,
+      "track_iou": 0.2,
+      "track_max_age": 3,
+      "keep_best": 15,
+      "merge_ratio": 0.5,
+      "merge_gap_s": 2.0,
+      "min_confidence": 0.35,
+      "min_readings": 2,
+      "high_confidence": 0.65,
+      "debug": false,
+      "models_dir": "C:\\Users\\dell\\Documents\\plate-detector\\models"
+    },
+    "models": {
+      "yolo-v9-t-640-license-plates-end2end.onnx": {
+        "file": "yolo-v9-t-640-license-plates-end2end.onnx",
+        "sha256": "c3c1026ca7d0585dd88084d68182dd897113712fa734ae1557ca70174440c076"
+      },
+      "cct_s_v2_global.onnx": {
+        "file": "cct_s_v2_global.onnx",
+        "sha256": "384bbbd2cea3ef54761d3df70822ef3a349ee1a112aeafddbe0e3ba06bc6e47b"
+      }
+    },
+    "frames": {
+      "sampled": 241,
+      "processed": 241,
+      "skipped_by_gate": 0,
+      "detector_passes": 363,
+      "detections": 65,
+      "readings": 52
+    },
+    "timing_s": {
+      "total": 55.98,
+      "load_models": 0.24,
+      "decode_wait": 15.18,
+      "gate": 0.06,
+      "convert": 0.72,
+      "detect_tiled": 17.79,
+      "crop": 0.0,
+      "ocr": 2.21,
+      "track": 0.01,
+      "frame_total": 40.44,
+      "detect_single": 19.25,
+      "merge": 0.04
+    },
+    "memory": {
+      "peak_rss_mb": 340.0,
+      "peak_private_mb": 316.9,
+      "source": "windows peak_wset",
+      "budget_mb": 512
+    },
+    "latency_ms": {
+      "load_models": {
+        "calls": 1,
+        "mean_ms": 235.66,
+        "p50_ms": 235.66,
+        "p95_ms": 235.66,
+        "max_ms": 235.66
+      },
+      "decode_wait": {
+        "calls": 242,
+        "mean_ms": 62.74,
+        "p50_ms": 16.42,
+        "p95_ms": 201.9,
+        "max_ms": 263.74
+      },
+      "gate": {
+        "calls": 241,
+        "mean_ms": 0.25,
+        "p50_ms": 0.23,
+        "p95_ms": 0.41,
+        "max_ms": 0.63
+      },
+      "convert": {
+        "calls": 241,
+        "mean_ms": 2.97,
+        "p50_ms": 2.78,
+        "p95_ms": 3.88,
+        "max_ms": 15.62
+      },
+      "detect_tiled": {
+        "calls": 61,
+        "mean_ms": 291.69,
+        "p50_ms": 296.22,
+        "p95_ms": 316.54,
+        "max_ms": 330.08
+      },
+      "crop": {
+        "calls": 241,
+        "mean_ms": 0.01,
+        "p50_ms": 0.0,
+        "p95_ms": 0.08,
+        "max_ms": 0.23
+      },
+      "ocr": {
+        "calls": 241,
+        "mean_ms": 9.15,
+        "p50_ms": 0.0,
+        "p95_ms": 62.72,
+        "max_ms": 129.3
+      },
+      "track": {
+        "calls": 241,
+        "mean_ms": 0.06,
+        "p50_ms": 0.02,
+        "p95_ms": 0.18,
+        "max_ms": 1.2
+      },
+      "frame_total": {
+        "calls": 241,
+        "mean_ms": 167.81,
+        "p50_ms": 116.7,
+        "p95_ms": 354.83,
+        "max_ms": 428.67
+      },
+      "detect_single": {
+        "calls": 180,
+        "mean_ms": 106.92,
+        "p50_ms": 107.15,
+        "p95_ms": 119.11,
+        "max_ms": 131.35
+      },
+      "merge": {
+        "calls": 1,
+        "mean_ms": 37.32,
+        "p50_ms": 37.32,
+        "p95_ms": 37.32,
+        "max_ms": 37.32
+      },
+      "decode_per_source_frame": {
+        "calls": 1801,
+        "mean_ms": 30.54,
+        "p50_ms": 22.68,
+        "p95_ms": 77.01,
+        "max_ms": 222.82
+      }
+    },
+    "throughput": {
+      "video_seconds": 60.03,
+      "processing_seconds": 55.98,
+      "real_time_factor": 0.93,
+      "source_frames_decoded": 1801,
+      "decode_fps_average": 32.2,
+      "frames_through_models": 241,
+      "frames_through_models_per_s": 4.31
+    },
+    "tracks_before_filter": 33
+  }
+}
